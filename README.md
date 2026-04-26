@@ -9,6 +9,7 @@ AquaScan is a technical prototype designed for Irish planning authorities to eva
 * [How it Works (Methodology)](#how-it-works-methodology)
 * [Risk Assessment Logic](#risk-assessment-logic)
 * [Data Requirements](#data-requirements)
+* [Future Expansion](#future-expansion)
 * [Installation & Setup](#installation--setup)
 
 ---
