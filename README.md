@@ -1,92 +1,75 @@
-# 🌧️ AquaScan – Interactive Soil Moisture Viewer for Irish Planning
+# 🌧️ AquaScan: Soil Moisture Spatial Analysis for Irish Planning
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://aquascan.streamlit.app) *(replace with your deployed URL)*
+AquaScan is a technical prototype designed for Irish planning authorities to evaluate soil moisture conditions on proposed development sites. It utilizes satellite-derived imagery (Copernicus) to classify land into moisture zones and generate regulatory-aligned planning conditions.
 
-AquaScan is a **decision‑support prototype** for Irish planning authorities. It helps planning officers quickly assess soil moisture conditions over a proposed development site using **satellite‑derived Copernicus data** (exported as an RGB GeoTIFF from QGIS) and **interactive map drawing**.
-
-The app classifies the area into **dry**, **moderate**, and **wet** zones, displays a **blue intensity map**, and generates **draft planning conditions** based on Irish regulations (BRE365, GDSDS, OPW guidelines).
-
----
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://aquaappsoilmoisture-4ffds6yaknqk6ajzu8dgh9.streamlit.app/)
 
 ## 📖 Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [How It Works](#how-it-works)
-- [Data Requirements](#data-requirements)
-- [Installation & Setup](#installation--setup)
-- [Usage](#usage)
-- [Methodology & Regulatory Context](#methodology--regulatory-context)
-- [Project Structure](#project-structure)
-- [Future Improvements](#future-improvements)
-- [License](#license)
+* [Overview](#overview)
+* [Technical Features](#technical-features)
+* [Methodology](#methodology)
+* [Risk Assessment Logic](#risk-assessment-logic)
+* [Data Requirements](#data-requirements)
+* [Installation & Setup](#installation--setup)
 
 ---
 
 ## Overview
+Irish planning authorities often lack independent, real-time environmental data for site assessments. AquaScan demonstrates how **Copernicus Sentinel data** can provide immediate, objective moisture information. The tool processes pre-styled RGB GeoTIFFs to provide quantitative metrics for specific land parcels.
 
-Irish planning authorities often lack independent, real‑time environmental data when assessing planning applications. AquaScan demonstrates how **space technology** (Copernicus Sentinel‑1/2, CLMS) can provide immediate, objective soil moisture information.
+## Technical Features
+* **Interactive Geometry:** Site boundary definition via `streamlit-folium`.
+* **CRS Synchronisation:** Automated handling of **EPSG:3857** and raster-specific coordinate systems for precise clipping.
+* **Pixel Classification Engine:** Quantitative analysis of RGB channel dominance for land characterisation.
+* **Raster Footprint Mapping:** Dynamic calculation of data bounds to prevent out-of-range errors.
+* **Regulatory Alignment:** Automated draft conditions based on **GDSDS** and **BRE365** standards.
 
-This version uses a **pre‑processed RGB GeoTIFF** (exported from QGIS) where:
+## Methodology
+The tool operates through a four-stage pipeline:
+1.  **Coordinate Transformation:** Converts user-drawn WGS84 polygons into the Raster's native Projection.
+2.  **Spatial Clipping:** Uses `rasterio` to mask the GeoTIFF to the user's defined site boundary.
+3.  **Classification Logic:**
+    * **Dry:** $Red > Green$ and $Red > Blue$
+    * **Moderate:** $Green > Red$ and $Green > Blue$
+    * **Wet:** $Blue > Red$ and $Blue > Green$
+4.  **Reporting:** Outputs a blue-scale moisture map and categorical risk level.
 
-- **Red** = dry areas  
-- **Green** = moderate moisture  
-- **Blue** = wet areas  
+## Risk Assessment Logic
+Risk is determined by the density of "Wet" pixels within the clipped area.
 
-By drawing a polygon on an interactive map, the user obtains:
-
-- **Percentage** of dry/moderate/wet pixels in the selected area.
-- A **blue‑scale moisture map** (light blue = drier, dark blue = wetter).
-- A **risk level** (LOW / MEDIUM / HIGH) and a **draft planning condition** referencing Irish standards (BRE365, GDSDS).
-
----
-
-## Features
-
-✅ **Interactive map** - Draw any polygon (development site boundary).  
-✅ **Local GeoTIFF support** - Upload your own RGB moisture map (exported from QGIS).  
-✅ **Automatic CRS handling** - Supports EPSG:3857 (Web Mercator) and reprojects user polygons accordingly.  
-✅ **Colour‑based classification** - Each pixel classified as dry (red‑dominant), moderate (green‑dominant), or wet (blue‑dominant).  
-✅ **Continuous blue output map** - Light blue (dry) → dark blue (wet), with a numeric colourbar.  
-✅ **Risk & condition generation** - Outputs a draft planning condition based on wet area percentage and Irish regulations.  
-✅ **Raster footprint overlay** - Shows where your data covers on the map, avoiding out‑of‑range errors.  
-✅ **Manual bounding box** - Fallback if drawing is not possible.
-
----
-
-## How It Works
-
-1. **Upload** an RGB GeoTIFF (e.g., from Copernicus CLMS styled in QGIS).
-2. **Draw** a polygon on the map (or enter manual coordinates).
-3. The app **clips** the raster to the polygon (after transforming coordinates to the raster’s CRS).
-4. **Pixel classification** – Each pixel is labelled dry/moderate/wet by comparing RGB channel dominance.
-5. **Numeric mapping** – Dry → 150, Moderate → 200, Wet → 250 (for the blue colourbar).
-6. **Display**:
-   - Percentage breakdown of classes.
-   - Blue‑scale image of the clipped area with a colourbar.
-   - Risk level and draft planning condition.
-7. (Optional) The raster footprint (red rectangle) helps you see where data exists.
-
----
+| Wet Pixel % | Risk Level | Recommended Planning Condition |
+| :--- | :--- | :--- |
+| **> 50%** | **HIGH** | Infiltration unlikely. Engineered drainage systems required. |
+| **25% - 50%** | **MEDIUM** | BRE365 soakaway or percolation test recommended. |
+| **< 25%** | **LOW** | Standard surface water drainage protocols acceptable. |
 
 ## Data Requirements
-
-- **Input**: A **3‑band RGB GeoTIFF** (GeoTIFF with 3 colour bands) where:
-  - Red channel dominates in dry areas.
-  - Green channel dominates in moderate areas.
-  - Blue channel dominates in wet areas.
-- Typical sources:
-  - Copernicus CLMS Surface Soil Moisture (SSM) or Soil Water Index (SWI) exported from QGIS with a **colour‑stretched style** (red‑dry, green‑moderate, blue‑wet).
-  - Any RGB map where colours correspond to moisture classes (even a hand‑drawn overlay).
-
-> ⚠️ This prototype works with **colour visualisations**, not raw single‑band numerical rasters. For real soil moisture in m³/m³, please use the original Copernicus numerical products.
-
----
+Input files must meet the following specifications:
+* **Format:** 3-band RGB GeoTIFF.
+* **Styling:** Exported from QGIS/ArcGIS using a discrete colour-stretched style (Red: Dry, Green: Moderate, Blue: Wet).
+* **Source:** Typically derived from Copernicus CLMS Surface Soil Moisture (SSM) or Soil Water Index (SWI) products.
 
 ## Installation & Setup
 
-### 1. Clone the repository
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/yourusername/aquascan.git
+    cd aquascan
+    ```
+2.  **Install dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+3.  **Run the application:**
+    ```bash
+    streamlit run app.py
+    ```
 
-```bash
-git clone https://github.com/yourusername/aquascan.git
-cd aquascan# aquahub_soil_moisture
+## Project Structure
+* `app.py`: Main Streamlit application logic.
+* `requirements.txt`: Python dependencies (Rasterio, Folium, Geopandas, etc.).
+* `data/`: Directory for sample GeoTIFF files.
+
+---
+
+**Regulatory Context:** This tool references **BRE Digest 365** (Soakaway design), **GDSDS** (Greater Dublin Strategic Drainage Study), and **OPW** flood risk management guidelines.
