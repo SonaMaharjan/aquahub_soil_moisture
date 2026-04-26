@@ -43,14 +43,14 @@ By drawing a polygon on an interactive map, the user obtains:
 
 ## Features
 
-✅ **Interactive map** – Draw any polygon (development site boundary).  
-✅ **Local GeoTIFF support** – Upload your own RGB moisture map (exported from QGIS).  
-✅ **Automatic CRS handling** – Supports EPSG:3857 (Web Mercator) and reprojects user polygons accordingly.  
-✅ **Colour‑based classification** – Each pixel classified as dry (red‑dominant), moderate (green‑dominant), or wet (blue‑dominant).  
-✅ **Continuous blue output map** – Light blue (dry) → dark blue (wet), with a numeric colourbar.  
-✅ **Risk & condition generation** – Outputs a draft planning condition based on wet area percentage and Irish regulations.  
-✅ **Raster footprint overlay** – Shows where your data covers on the map, avoiding out‑of‑range errors.  
-✅ **Manual bounding box** – Fallback if drawing is not possible.
+✅ **Interactive map** - Draw any polygon (development site boundary).  
+✅ **Local GeoTIFF support** - Upload your own RGB moisture map (exported from QGIS).  
+✅ **Automatic CRS handling** - Supports EPSG:3857 (Web Mercator) and reprojects user polygons accordingly.  
+✅ **Colour‑based classification** - Each pixel classified as dry (red‑dominant), moderate (green‑dominant), or wet (blue‑dominant).  
+✅ **Continuous blue output map** - Light blue (dry) → dark blue (wet), with a numeric colourbar.  
+✅ **Risk & condition generation** - Outputs a draft planning condition based on wet area percentage and Irish regulations.  
+✅ **Raster footprint overlay** - Shows where your data covers on the map, avoiding out‑of‑range errors.  
+✅ **Manual bounding box** - Fallback if drawing is not possible.
 
 ---
 
