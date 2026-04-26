@@ -56,8 +56,8 @@ Currently, this prototype relies exclusively on the Soil Moisture Index to asses
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/yourusername/aquascan.git
-    cd aquascan
+    git clone https://github.com/yourusername/aquahub_soil_moisture.git
+    cd aquahub_soil_moisture
     ```
 2.  **Install dependencies:**
     ```bash
