@@ -1,13 +1,12 @@
-# 🌧️ AquaScan: Soil Moisture Spatial Analysis for Irish Planning
+# AquaScan: Soil Moisture Spatial Analysis for Irish Planning
 
-AquaScan is a technical prototype designed for Irish planning authorities to evaluate soil moisture conditions on proposed development sites. It utilizes satellite-derived imagery (Copernicus) to classify land into moisture zones and generate regulatory-aligned planning conditions.
+AquaScan is a technical prototype designed for Irish planning authorities to evaluate soil moisture conditions on proposed development sites. It uses satellite-derived imagery (Copernicus) to classify land into moisture zones and generate regulatory-aligned planning conditions.
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://aquaappsoilmoisture-4ffds6yaknqk6ajzu8dgh9.streamlit.app/)
 
 ## 📖 Table of Contents
 * [Overview](#overview)
-* [Technical Features](#technical-features)
-* [Methodology](#methodology)
+* [How it Works (Methodology)](#how-it-works-methodology)
 * [Risk Assessment Logic](#risk-assessment-logic)
 * [Data Requirements](#data-requirements)
 * [Installation & Setup](#installation--setup)
@@ -17,37 +16,31 @@ AquaScan is a technical prototype designed for Irish planning authorities to eva
 ## Overview
 Irish planning authorities often lack independent, real-time environmental data for site assessments. AquaScan demonstrates how **Copernicus Sentinel data** can provide immediate, objective moisture information. The tool processes pre-styled RGB GeoTIFFs to provide quantitative metrics for specific land parcels.
 
-## Technical Features
-* **Interactive Geometry:** Site boundary definition via `streamlit-folium`.
-* **CRS Synchronisation:** Automated handling of **EPSG:3857** and raster-specific coordinate systems for precise clipping.
-* **Pixel Classification Engine:** Quantitative analysis of RGB channel dominance for land characterisation.
-* **Raster Footprint Mapping:** Dynamic calculation of data bounds to prevent out-of-range errors.
-* **Regulatory Alignment:** Automated draft conditions based on **GDSDS** and **BRE365** standards.
+## How it Works (Methodology)
+The app follows a four-step process to turn satellite images into a planning report:
 
-## Methodology
-The tool operates through a four-stage pipeline:
-1.  **Coordinate Transformation:** Converts user-drawn WGS84 polygons into the Raster's native Projection.
-2.  **Spatial Clipping:** Uses `rasterio` to mask the GeoTIFF to the user's defined site boundary.
-3.  **Classification Logic:**
-    * **Dry:** $Red > Green$ and $Red > Blue$
-    * **Moderate:** $Green > Red$ and $Green > Blue$
-    * **Wet:** $Blue > Red$ and $Blue > Green$
-4.  **Reporting:** Outputs a blue-scale moisture map and categorical risk level.
+1.  **Aligning the Maps:** When you draw a shape on the interactive map, the app converts the coordinates of your drawing into the specific grid system used by the satellite image.
+2.  **Cutting the Data:** The app uses your drawn boundary like a cookie cutter, "clipping" out only the relevant portion of the image and discarding the rest.
+3.  **Sorting the Colours:** The app looks at every individual pixel in your selected area and checks which colour is the strongest:
+    * **Red is strongest:** Classified as **Dry**.
+    * **Green is strongest:** Classified as **Moderate**.
+    * **Blue is strongest:** Classified as **Wet**.
+4.  **Final Report:** The app calculates the percentage of each category to provide a risk level, a blue-scale map of wet spots, and a draft planning condition.
 
 ## Risk Assessment Logic
-Risk is determined by the density of "Wet" pixels within the clipped area.
+Risk is determined by the density of "Wet" pixels within the clipped area. For the scope of this prototype, we came up with the following conditions.
 
-| Wet Pixel % | Risk Level | Recommended Planning Condition |
+| Wet Pixel % | Risk Level | Conditions |
 | :--- | :--- | :--- |
 | **> 50%** | **HIGH** | Infiltration unlikely. Engineered drainage systems required. |
-| **25% - 50%** | **MEDIUM** | BRE365 soakaway or percolation test recommended. |
+| **25% – 50%** | **MEDIUM** | BRE365 soakaway or percolation test recommended. |
 | **< 25%** | **LOW** | Standard surface water drainage protocols acceptable. |
 
 ## Data Requirements
-Input files must meet the following specifications:
+Input files must meet the following specifications (:
 * **Format:** 3-band RGB GeoTIFF.
-* **Styling:** Exported from QGIS/ArcGIS using a discrete colour-stretched style (Red: Dry, Green: Moderate, Blue: Wet).
-* **Source:** Typically derived from Copernicus CLMS Surface Soil Moisture (SSM) or Soil Water Index (SWI) products.
+* **Styling:** Exported from QGIS using a discrete colour-stretched style (Red: Dry, Green: Moderate, Blue: Wet).
+* **Source:** Derived from Copernicus CLMS Surface Soil Moisture (SSM) or Soil Water Index (SWI) products.
 
 ## Installation & Setup
 
@@ -64,11 +57,6 @@ Input files must meet the following specifications:
     ```bash
     streamlit run app.py
     ```
-
-## Project Structure
-* `app.py`: Main Streamlit application logic.
-* `requirements.txt`: Python dependencies (Rasterio, Folium, Geopandas, etc.).
-* `data/`: Directory for sample GeoTIFF files.
 
 ---
 
