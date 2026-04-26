@@ -4,7 +4,7 @@ AquaScan is a technical prototype designed for Irish planning authorities to eva
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://aquaappsoilmoisture-4ffds6yaknqk6ajzu8dgh9.streamlit.app/)
 
-## 📖 Table of Contents
+## Table of Contents
 * [Overview](#overview)
 * [How it Works (Methodology)](#how-it-works-methodology)
 * [Risk Assessment Logic](#risk-assessment-logic)
@@ -42,6 +42,15 @@ Input files must meet the following specifications (:
 * **Styling:** Exported from QGIS using a discrete colour-stretched style (Red: Dry, Green: Moderate, Blue: Wet).
 * **Source:** Derived from Copernicus CLMS Surface Soil Moisture (SSM) or Soil Water Index (SWI) products.
 
+## Future Expansion
+Currently, this prototype relies exclusively on the Soil Moisture Index to assess site suitability. To provide a more comprehensive environmental risk profile, future versions will integrate the following datasets:
+
+* **Flood Risks:** High-resolution monitoring via Copernicus Sentinel-1 (GRD).
+
+* **Evapotranspiration:** Water-cycle data from Copernicus CLMS Global Land Service.
+
+* **Soil Sealing:** Land permeability metrics from Copernicus CLMS High Resolution Layer (HRL).
+
 ## Installation & Setup
 
 1.  **Clone the repository:**
@@ -57,7 +66,3 @@ Input files must meet the following specifications (:
     ```bash
     streamlit run app.py
     ```
-
----
-
-**Regulatory Context:** This tool references **BRE Digest 365** (Soakaway design), **GDSDS** (Greater Dublin Strategic Drainage Study), and **OPW** flood risk management guidelines.
