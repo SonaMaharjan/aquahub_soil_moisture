@@ -14,7 +14,7 @@ from pyproj import Transformer
 
 st.set_page_config(page_title="AquaHub – Soil Moisture Map", layout="wide")
 st.title("🌧️ AquaHub - Soil Moisture")
-st.markdown("Draw a polygon to see the moisture intensity map (150 = dry, 200 = moderate, 250 = wet).")
+st.markdown("Draw a polygon to see the moisture intensity map.")
 
 # ---------- Helper functions ----------
 def transform_coords(coords, from_crs, to_crs):
