@@ -1,4 +1,4 @@
-# AquaScan: Soil Moisture Spatial Analysis for Irish Planning
+# AquaHub: Soil Moisture Spatial Analysis for Irish Planning
 
 AquaScan is a technical prototype designed for Irish planning authorities to evaluate soil moisture conditions on proposed development sites. It uses satellite-derived imagery (Copernicus) to classify land into moisture zones and generate regulatory-aligned planning conditions.
 
